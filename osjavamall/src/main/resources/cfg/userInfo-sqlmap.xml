@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserInfo">
+    <typeAlias alias="LoginLog" type="com.os.domain.LoginLog"/>
+    <typeAlias alias="User" type="com.os.domain.User"/>
+    <resultMap class="com.os.domain.User" id="User">
+        <result property="userId" column="user_id" javaType="java.lang.String" nullValue=""/>
+        <result property="userName" column="user_name" javaType="java.lang.String" nullValue=""/>
+		<result property="password" column="password" javaType="java.lang.String" nullValue=""/>
+		<result property="credits" column="credits" javaType="java.lang.Integer"/>
+		<result property="lastIp" column="last_ip" javaType="java.lang.String" nullValue=""/>
+		<result property="lastVisit" column="last_visit" javaType="java.util.Date"/>
+		<result property="nickName" column="nick_name" javaType="java.lang.String" nullValue=""/>
+		<result property="mobilePhone" column="mobile_phone" javaType="java.lang.String" nullValue=""/>
+		<result property="realName" column="real_name" javaType="java.lang.String" nullValue=""/>
+		<result property="address" column="address" javaType="java.lang.String" nullValue=""/>
+		<result property="postCard" column="post_card" javaType="java.lang.String" nullValue=""/>
+		<result property="userImg" column="user_img" javaType="java.lang.String" nullValue=""/>
+    </resultMap>
+    
+    <sql id="USER_INFOCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
+			<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
+			<isNotEmpty prepend="and" property="password"> u.password=#password#</isNotEmpty>
+			<isNotEmpty prepend="and" property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
+			<isNotEmpty prepend="and" property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
+		</dynamic>
+	</sql>
+    
+	<insert id="addLoginLog" parameterClass="LoginLog">
+ 		INSERT INTO t_login_log(user_id,ip,login_datetime) 
+          values(#userId#, #ip#, #loginDate#)
+ 	</insert>
+ 	<!-- 新增用户 -->
+ 	<insert id="insertUserInfo" parameterClass="User">
+ 	    INSERT INTO t_user(user_id,user_name,password,credits) 
+          values(#userId#, #userName#, #password#,#credits#)
+ 	</insert>
+ 	<!-- 根据条件查询匹配的记录 -->
+	<select id="findUserByCondition" parameterClass="java.util.HashMap" resultMap="User">
+	    SELECT USER_ID
+				,USER_NAME
+				,CREDITS
+				,PASSWORD
+				,LAST_VISIT
+				,LAST_IP
+				,NICK_NAME
+				,MOBILE_PHONE
+				,REAL_NAME
+				,ADDRESS
+				,POST_CARD
+				,USER_IMG FROM t_user u 
+	     <dynamic prepend="where">
+	         <isNotEmpty prepend="and" property="userId"> u.user_id=#userId#</isNotEmpty>
+	        <isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
+			<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
+			<isNotEmpty prepend="and" property="password"> u.password=#password#</isNotEmpty>
+			<isNotEmpty prepend="and" property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
+			<isNotEmpty prepend="and" property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 根据用户名和密码查询匹配的记录 -->
+	<select id="getMatchCount" parameterClass="java.util.HashMap" resultMap="User">
+	    SELECT * FROM t_user WHERE user_name =#userName# and password=#password# 
+	</select>
+	<!-- 更新用户 -->
+	<update id="updateUserInfo" parameterClass="User">
+	    UPDATE t_user u 
+	    <dynamic prepend="set">
+	        <isNotEmpty prepend="," property="userName"> u.user_name=#userName#</isNotEmpty>
+			<isNotEmpty prepend="," property="credits"> u.credits=#credits#</isNotEmpty>
+			<isNotEmpty prepend="," property="password"> u.password=#password#</isNotEmpty>
+			<isNotEmpty prepend="," property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
+			<isNotEmpty prepend="," property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
+			<isNotEmpty prepend="," property="nickName"> u.nick_name=#nickName#</isNotEmpty>
+			<isNotEmpty prepend="," property="mobilePhone"> u.mobile_phone=#mobilePhone#</isNotEmpty>
+			<isNotEmpty prepend="," property="realName"> u.real_name=#realName#</isNotEmpty>
+			<isNotEmpty prepend="," property="address"> u.address=#address#</isNotEmpty>
+			<isNotEmpty prepend="," property="postCard"> u.post_card=#postCard#</isNotEmpty>
+			<isNotEmpty prepend="," property="userImg"> u.user_img=#userImg#</isNotEmpty>
+		</dynamic>
+		where 
+ 	 		u.user_id=#userId#
+	</update>
+	<!-- 删除用户 -->
+	<update id="deleteUserInfo" parameterClass="User">
+	    DELETE from t_user u 
+		where 
+ 	 		u.user_id=#userId#
+	</update>
+	<!-- 查询登录日志表总记录条数 -->
+	<select id="getCountLoginLog" resultClass="java.lang.Integer">
+	    select count(*) from t_login_log
+	</select>
+	<!-- 获取用户sequence序列值 -->
+	<select id="getUserId" resultClass="java.lang.String">
+		  select USERINFO_SEQUENCE.nextval  from dual
+	</select>
+	<!-- 查询用户列表 -->
+	<select id="getUserInfoList" resultMap="User" >
+		select * from t_user order by user_id desc
+	</select>
+	<!-- 查询用户总数 -->
+	<select id="getCountUserInfo" resultClass="java.lang.Integer">
+	    select count(*) from t_user u
+	    <dynamic prepend="where">
+				<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
+				<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
+				<isNotEmpty prepend="and" property="password"> u.password=#password#</isNotEmpty>
+				<isNotEmpty prepend="and" property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
+				<isNotEmpty prepend="and" property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
+			</dynamic>
+	</select>
+	<!-- 测试的sql -->
+	<select id="testUserInfoList" resultMap="User" parameterClass="java.util.HashMap">
+	    
+	    select * from (select b.*,rownum rn from (
+			select USER_ID
+				,USER_NAME
+				,CREDITS
+				,PASSWORD
+				,LAST_VISIT
+				,LAST_IP
+				,NICK_NAME
+				,MOBILE_PHONE
+				,REAL_NAME
+				,ADDRESS
+				,POST_CARD
+				,USER_IMG from t_user u
+			<dynamic prepend="where">
+				<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
+				<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
+				<isNotEmpty prepend="and" property="password"> u.password=#password#</isNotEmpty>
+				<isNotEmpty prepend="and" property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
+				<isNotEmpty prepend="and" property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
+			</dynamic>
+			order by user_id desc
+			
+			)b where <![CDATA[ rownum<=#endNum#)
+			where  rn>#startNum#
+	    	]]>
+	</select>
+
+</sqlMap>

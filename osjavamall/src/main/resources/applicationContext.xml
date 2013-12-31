@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+    
+    <!-- 扫描类包，将标注Spring注解的类自动转化Bean，同时完成Bean的注入 -->
+    <context:component-scan base-package="com.os.dao"/>
+    <context:component-scan base-package="com.os.service"/>
+    <context:property-placeholder location="classpath:jdbc.properties" file-encoding="utf8"/>
+    <!-- <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+        p:location="classpath:jdbc.properties"
+        p:fileEncodeing="utf-8"
+        /> -->
+    <bean id="utf8" class="java.lang.String">
+        <constructor-arg value="utf-8"></constructor-arg>
+    </bean>
+    <!-- 配置数据源 -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		p:driverClassName="${driverClassName}"
+		p:url="${url}" 
+		p:username="${userName}"
+		p:password="${password}" /> -->
+		
+		<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		   <property name="driverClass"><value>${driverClassName}</value></property>
+		   <property name="jdbcUrl"><value>${url}</value></property>
+		   <property name="user"><value>${userName}</value></property>
+		   <property name="password"><value>${password}</value></property>
+		   <!--连接池中保留的最小连接数。-->            
+		    <property name="minPoolSize" value="10" />        
+		    <!--连接池中保留的最大连接数。Default: 15 -->         
+		    <property name="maxPoolSize" value="100" />        
+		    <!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->               
+		    <property name="maxIdleTime" value="1800" />        
+		    <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->               
+		    <property name="acquireIncrement" value="3" />        
+		    <property name="maxStatements" value="1000" />         
+		    <property name="initialPoolSize" value="10" />          
+		    <!--每60秒检查所有连接池中的空闲连接。Default: 0 -->       
+		    <property name="idleConnectionTestPeriod" value="60" />          
+		    <!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->       
+		    <property name="acquireRetryAttempts" value="30" />         
+		    <property name="breakAfterAcquireFailure" value="true" />             
+		    <property name="testConnectionOnCheckout" value="false" />
+	</bean>
+	<bean id="fastDFSFileOperator" class="com.os.fastdfsutil.FastDFSFileOperator" init-method="initStorageConfig">
+	</bean>
+	<bean id="dialect" class="com.os.persist.dialect.OracleDialect" />
+	<!-- ibatis访问实例 -->
+	<bean id="sqlExecutor" class="com.os.persist.ibatis.LimitSqlExecutor">
+		<property name="dialect" ref="dialect" />
+	</bean>
+	<!-- 配置Jdbc模板  -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"
+		p:dataSource-ref="dataSource" />
+		
+<!-- 	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean> -->
+	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	    <property name="configLocations">
+			<list>
+				<value>classpath:/cfg/ibatis-config.xml</value>
+			</list>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+	<bean id="ibatisPersistence"
+		class="com.os.persist.ibatis.IBatisPersistenceImpl"
+		init-method="initialize">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+		<property name="sqlExecutor" ref="sqlExecutor" />
+	</bean>
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="dataSource" />
+		
+	<!-- 通过AOP配置提供事务增强，让service包下所有Bean的所有方法拥有事务 -->
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="serviceMethod"
+			expression=" execution(* com.os.service..*(..))" />
+		<aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice" />
+	</aop:config>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+</beans>

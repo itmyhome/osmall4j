@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+	<!-- 扫描web包，应用Spring的注解 -->
+	<context:component-scan base-package="com.os.web"/>
+	<!-- 默认的注解映射的支持 -->  
+	<!-- 扫描注解 -->
+   <mvc:annotation-driven /> 
+	
+	<!-- 访问静态资源 -->
+	<mvc:resources mapping="/css/**" location="/css/" />  
+	<mvc:resources mapping="/ext3.0/**" location="/ext3.0/" />  
+	<mvc:resources mapping="/images/**" location="/images/" />  
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<!-- HandlerMapping -->
+	<!-- <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/> -->
+	<!-- HandlerAdapter -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>  -->
+	<!-- 配置视图解析器，将ModelAndView及字符串解析为具体的页面 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:viewClass="org.springframework.web.servlet.view.JstlView" 
+		p:prefix="/WEB-INF/jsp/"
+		p:suffix=".jsp" />
+	
+	<bean name="/hello" class="com.os.web.TestController"></bean>
+	<bean name="/hello2" class="com.os.web.Test2Controller">
+	    <property name="cacheSeconds" value="5"/>
+	</bean>
+	<!-- 请求转发 -->
+	<bean name="/forwardToServlet"
+		class="org.springframework.web.servlet.mvc.ServletForwardingController">
+		<property name="servletName" value="forwarding"></property>
+	</bean>
+ 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+        <property name="defaultEncoding" value="UTF-8"/>  
+        <!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->  
+        <!-- 内存缓存1M -->
+		<property name="maxInMemorySize" value="1000000"></property>
+		<!-- 最大2GB -->
+		<property name="maxUploadSize" value="32505856" ></property>
+    </bean> 
+    
+ 	<!-- SpringMVC在超出上传文件限制时，会抛出org.springframework.web.multipart.MaxUploadSizeExceededException -->  
+    <!-- 该异常是SpringMVC在检查上传的文件信息时抛出来的，而且此时还没有进入到Controller方法中 -->  
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+        <property name="exceptionMappings">  
+            <props>  
+                 <!-- 遇到MaxUploadSizeExceededException异常时，自动跳转到/WEB-INF/jsp/error_fileupload.jsp页面  -->
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error_fileupload</prop>  
+            </props>  
+        </property>  
+    </bean>
+    
+    <bean name="/user/**" class="com.os.web.UserController">
+		<property name="createView" value="user/create"/>
+		<property name="updateView" value="user/update"/>
+		<property name="deleteView" value="user/delete"/>
+		<property name="listView" value="user/list"/>
+		<property name="redirectToListView" value="redirect:/user/list"/>
+		<!--  使用PropertiesMethodNameResolver来解析功能处理方法名  --> 
+		<!--property name="methodNameResolver" ref="propertiesMethodNameResolver"/-->
+	</bean> 
+	
+    
+    <!--委托对象 --> 
+	<bean id="userDelegate" class="com.os.web.UserDelegate">
+		<property name="createView" value="user2/create"/>
+		<property name="updateView" value="user2/update"/>
+		<property name="deleteView" value="user2/delete"/>
+		<property name="listView" value="user2/list"/>
+		<property name="redirectToListView" value="redirect:/user2/list"/>
+	</bean>
+	<!--控制器对象--> 
+	<bean name="/user2/**" class="org.springframework.web.servlet.mvc.multiaction.MultiActionController">
+		<property name="delegate" ref="userDelegate"/>
+		<property name="methodNameResolver" ref="parameterMethodNameResolver"/>
+	</bean> 
+	
+	<bean id="parameterMethodNameResolver"
+		class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+		<!-- 1、根据请求参数名解析功能方法名  -->
+		<property name="methodParamNames" value="create,update,delete"/>
+		<!-- 2、根据请求参数名的值解析功能方法名  -->
+		<property name="paramName" value="action"/> 
+		<!-- 3、逻辑方法名到真实方法名的映射  -->
+		<property name="logicalMappings">
+		<props>
+		<prop key="doList">list</prop>
+		</props>
+		</property>
+		<!--4、默认执行的功能处理方法  -->
+		<property name="defaultMethodName" value="list"/>
+	</bean>
+	
+	<bean id="messageSource"
+	class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<property name="basename" value="classpath:messages"/>
+	</bean>
+</beans>
