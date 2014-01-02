@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="UserInfo">
-    <typeAlias alias="LoginLog" type="com.os.domain.LoginLog"/>
-    <typeAlias alias="User" type="com.os.domain.User"/>
-    <resultMap class="com.os.domain.User" id="User">
+    <typeAlias alias="LoginLog" type="com.os.entity.LoginLog"/>
+    <typeAlias alias="User" type="com.os.entity.User"/>
+    <resultMap class="com.os.entity.User" id="User">
         <result property="userId" column="user_id" javaType="java.lang.String" nullValue=""/>
         <result property="userName" column="user_name" javaType="java.lang.String" nullValue=""/>
 		<result property="password" column="password" javaType="java.lang.String" nullValue=""/>
