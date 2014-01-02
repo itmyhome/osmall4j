@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.os.dao.LoginLogDao;
 import com.os.dao.UserDao;
-import com.os.domain.LoginLog;
-import com.os.domain.User;
+import com.os.entity.LoginLog;
+import com.os.entity.User;
 import com.os.pageutil.PageInfoGrid;
 import com.os.pageutil.PageUtils;
 @Service
