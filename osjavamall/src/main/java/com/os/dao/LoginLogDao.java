@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.os.common.SecDaoSupport;
-import com.os.domain.LoginLog;
+import com.os.entity.LoginLog;
 import com.os.pageutil.PageInfoGrid;
 @Component
 public class LoginLogDao extends SecDaoSupport implements IBaseDao<LoginLog>{

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.os.common.SecDaoSupport;
-import com.os.domain.User;
+import com.os.entity.User;
 import com.os.pageutil.PageInfoGrid;
 @Component
 public class UserDao extends SecDaoSupport implements IBaseDao<User>{
