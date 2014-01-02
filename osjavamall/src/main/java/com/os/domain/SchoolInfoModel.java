@@ -6,6 +6,7 @@ public class SchoolInfoModel {
 	private String specialty;// 专业
 	private String test;
 
+	private String id;
 	public String getSchoolType() {
 		return schoolType;
 	}
