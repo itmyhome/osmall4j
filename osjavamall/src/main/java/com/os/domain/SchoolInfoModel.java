@@ -5,6 +5,7 @@ public class SchoolInfoModel {
 	private String schoolName;// 学校名称
 	private String specialty;// 专业
 
+	private String id;
 	public String getSchoolType() {
 		return schoolType;
 	}
