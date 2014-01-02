@@ -7,6 +7,7 @@ public class SchoolInfoModel {
 	private String test;
 
 	private String id;
+	private String test2;
 	public String getSchoolType() {
 		return schoolType;
 	}
