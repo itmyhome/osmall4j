@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
-import com.os.domain.User;
+import com.os.entity.User;
 import com.os.fastdfsutil.FastDFSFileOperator;
 import com.os.fastdfsutil.StorageUnreachableException;
 import com.os.pageutil.PageInfo;

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.os.domain.User;
+import com.os.entity.User;
 import com.os.pageutil.PageInfoGrid;
 import com.os.service.UserService;
 
