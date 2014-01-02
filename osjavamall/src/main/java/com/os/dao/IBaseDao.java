@@ -9,7 +9,7 @@ import com.os.pageutil.PageInfoGrid;
  * <p>功能说明：主要提供每个DAO实现中都会出现的一些常用的方法（DAO中私有的方法请在各自的DAO接口中定义）</p>
  * @author weitao.co
  * @param <T>T为数据库交互对象 
- * @version 1.00     
+ * @version 1.00                                       
  */ 
 public interface IBaseDao<T> {
 
