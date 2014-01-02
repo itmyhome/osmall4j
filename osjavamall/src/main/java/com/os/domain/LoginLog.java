@@ -3,7 +3,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class LoginLog implements Serializable{
-	private int loginLogId;
+	private int loginLogId; 
 
 	private String userId;
 
