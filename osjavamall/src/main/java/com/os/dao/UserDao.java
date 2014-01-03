@@ -21,7 +21,7 @@ public class UserDao extends SecDaoSupport implements IBaseDao<User>{
 	}
 
 	public User findUserByCondition(User user) {
-		HashMap<String,String> params = new HashMap<String,String>();
+		HashMap<String,Integer> params = new HashMap<String,Integer>();
 		params.put("userId", user.getUserId());
 		User userModel = new User();
 		userModel = (User) ibatisPersistence.findObject("UserInfo.findUserByCondition", params);
@@ -46,12 +46,13 @@ public class UserDao extends SecDaoSupport implements IBaseDao<User>{
 
 	public Integer getCount(PageInfoGrid grid) {
 		Integer count = (Integer) ibatisPersistence.findObject(
-				"UserInfo.getCountUserInfo", grid);
+				"UserInfo.getCountUserInfo", grid.getSearch());
 		return count;
 	}
 
 	public ArrayList<User> getPageList(PageInfoGrid grid) {
-		ArrayList<User> userList = (ArrayList<User>) ibatisPersistence.findList("UserInfo.getUserInfoList", "",  grid.getPage().getStartRowNum(), grid.getPage().getPageSize());
+		@SuppressWarnings("unchecked")
+		ArrayList<User> userList = (ArrayList<User>) ibatisPersistence.findList("UserInfo.getUserInfoList",  grid.getSearch(),  grid.getPage().getStartRowNum(), grid.getPage().getPageSize());
 		return userList;
 	}
 
@@ -59,8 +60,8 @@ public class UserDao extends SecDaoSupport implements IBaseDao<User>{
 		return null;
 	}
 	
-	public String getUserId(){
-		return (String) ibatisPersistence.findObject("UserInfo.getUserId", "");
+	public Integer getUserId(){
+		return (Integer) ibatisPersistence.findObject("UserInfo.getUserId", "");
 	}
 	
 	public ArrayList<User> getPageList(HashMap<String, Object> hashMap) {
