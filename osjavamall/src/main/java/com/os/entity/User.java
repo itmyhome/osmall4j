@@ -28,7 +28,18 @@ public class User implements Serializable{
 	
 	private String userImg;
 	
+	private Integer continuousLoginTimes;
 	
+	
+
+
+	public int getContinuousLoginTimes() {
+		return continuousLoginTimes;
+	}
+
+	public void setContinuousLoginTimes(Integer continuousLoginTimes) {
+		this.continuousLoginTimes = continuousLoginTimes;
+	}
 
 	public String getUserImg() {
 		return userImg;
