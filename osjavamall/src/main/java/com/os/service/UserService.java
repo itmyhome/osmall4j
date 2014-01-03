@@ -48,33 +48,42 @@ public class UserService {
 	}
 	
 	private void jifen(User user){
-		String lastlogin = CommonUtils.dateFormat(user.getLastVisit(), CommonUtils.DATE_YYYYMMDD_FORMAT);
-		String newlogin = CommonUtils.dateFormat(new Date(), CommonUtils.DATE_YYYYMMDD_FORMAT);
-		int jf = user.getCredits()%30;
+		String lastlogin = CommonUtils.dateFormat(user.getLastVisit(),
+				CommonUtils.DATE_YYYYMMDD_FORMAT);
+		String newlogin = CommonUtils.dateFormat((new Date().getTime() - (24 * 3600 * 1000)),CommonUtils.DATE_YYYYMMDD_FORMAT);
+		String today = CommonUtils.dateFormat(new Date(),
+				CommonUtils.DATE_YYYYMMDD_FORMAT);
+		int jf = user.getCredits() % 30;
 		int dlcs = 0;
-		if (newlogin.equals(lastlogin)) {
-			dlcs = user.getContinuousLoginTimes();
-			//积分增加规则
-			if (jf == 0) {
-				user.setCredits( 30 + user.getCredits());
+		if (!today.equals(lastlogin)) {
+			if (newlogin.equals(lastlogin)) {
+				dlcs = user.getContinuousLoginTimes();
+				// 积分增加规则
+				if (jf == 0) {
+					user.setCredits(30 + user.getCredits());
+				}
+				if (jf <= 5) {
+					user.setCredits(5 + user.getCredits());
+				}
+				if (jf > 5 && jf <= 10) {
+					user.setCredits(9 + user.getCredits());
+				}
+				if (jf > 10 && jf <= 20) {
+					user.setCredits(12 + user.getCredits());
+				}
+				if (jf > 20 && jf < 29) {
+					user.setCredits(15 + user.getCredits());
+				}
+				
+				user.setContinuousLoginTimes(dlcs + 1);
+
+			} else {
+				// 连续登录次数为1,积分加5
+				user.setCredits(5 + user.getCredits());
+				user.setContinuousLoginTimes(1);
 			}
-			if (jf <= 5 ) {
-				user.setCredits( 5 + user.getCredits());
-			}
-			if (jf > 5 && jf <= 10) {
-				user.setCredits( 9 + user.getCredits());
-			}
-			if (jf > 10 && jf <= 20) {
-				user.setCredits( 12 + user.getCredits());
-			}
-			if (jf > 20 && jf < 29 ) {
-				user.setCredits( 15 + user.getCredits());
-			}
-		} else {
-			//连续登录次数为1,积分加5
-			user.setCredits( 5 + user.getCredits());
-		}
-		user.setContinuousLoginTimes(dlcs + 1);
+		} 
+			user.setLastVisit(new Date());
 	}
 	
 	public void loginSuccess(User user) {
