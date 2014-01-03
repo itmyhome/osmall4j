@@ -33,7 +33,7 @@ public class User implements Serializable{
 	
 
 
-	public int getContinuousLoginTimes() {
+	public Integer getContinuousLoginTimes() {
 		return continuousLoginTimes;
 	}
 

@@ -16,7 +16,7 @@
 		<result property="address" column="address" javaType="java.lang.String" nullValue=""/>
 		<result property="postCard" column="post_card" javaType="java.lang.String" nullValue=""/>
 		<result property="userImg" column="user_img" javaType="java.lang.String" nullValue=""/>
-		<result property="continuousLoginTimes" column="continuous_login_times" javaType="java.lang.Integer" nullValue=""/>
+		<result property="continuousLoginTimes" column="continuous_login_times" javaType="java.lang.Integer" nullValue="0"/>
     </resultMap>
     
     <sql id="USER_INFOCondition">
@@ -70,18 +70,18 @@
 	<update id="updateUserInfo" parameterClass="User">
 	    UPDATE t_user u 
 	    <dynamic prepend="set">
-	        <isNotEmpty prepend="," property="userName"> u.user_name=#userName#</isNotEmpty>
-			<isNotEmpty prepend="," property="credits"> u.credits=#credits#</isNotEmpty>
-			<isNotEmpty prepend="," property="password"> u.password=#password#</isNotEmpty>
-			<isNotEmpty prepend="," property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
-			<isNotEmpty prepend="," property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
-			<isNotEmpty prepend="," property="nickName"> u.nick_name=#nickName#</isNotEmpty>
-			<isNotEmpty prepend="," property="mobilePhone"> u.mobile_phone=#mobilePhone#</isNotEmpty>
-			<isNotEmpty prepend="," property="realName"> u.real_name=#realName#</isNotEmpty>
-			<isNotEmpty prepend="," property="address"> u.address=#address#</isNotEmpty>
-			<isNotEmpty prepend="," property="postCard"> u.post_card=#postCard#</isNotEmpty>
-			<isNotEmpty prepend="," property="userImg"> u.user_img=#userImg#</isNotEmpty>
-			<isNotEmpty prepend="," property="continuousLoginTimes"> u.Continuous_Login_Times=#continuousLoginTimes#</isNotEmpty>
+	        <isNotNull prepend="," property="userName"> u.user_name=#userName#</isNotNull>
+			<isNotNull prepend="," property="credits"> u.credits=#credits#</isNotNull>
+			<isNotNull prepend="," property="password"> u.password=#password#</isNotNull>
+			<isNotNull prepend="," property="lastVisit"> u.last_visit=#lastVisit#</isNotNull>
+			<isNotNull prepend="," property="lastIp"> u.last_ip=#lastIp#</isNotNull>
+			<isNotNull prepend="," property="nickName"> u.nick_name=#nickName#</isNotNull>
+			<isNotNull prepend="," property="mobilePhone"> u.mobile_phone=#mobilePhone#</isNotNull>
+			<isNotNull prepend="," property="realName"> u.real_name=#realName#</isNotNull>
+			<isNotNull prepend="," property="address"> u.address=#address#</isNotNull>
+			<isNotNull prepend="," property="postCard"> u.post_card=#postCard#</isNotNull>
+			<isNotNull prepend="," property="userImg"> u.user_img=#userImg#</isNotNull>
+			<isNotNull prepend="," property="continuousLoginTimes"> u.continuous_login_times=#continuousLoginTimes#</isNotNull>
 		</dynamic>
 		where 
  	 		u.user_id=#userId#
@@ -97,7 +97,7 @@
 	    select count(*) from t_login_log
 	</select>
 	<!-- 获取用户sequence序列值 -->
-	<select id="getUserId" resultClass="java.lang.String">
+	<select id="getUserId" resultClass="java.lang.Integer">
 		  select USERINFO_SEQUENCE.nextval  from dual
 	</select>
 	<!-- 查询用户列表 -->
