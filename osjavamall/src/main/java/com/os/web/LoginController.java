@@ -31,16 +31,14 @@ public class LoginController{
 	@RequestMapping(value = "/loginCheck")
 	public @ResponseBody Object loginCheck(HttpServletRequest request,User user){
 		
-		User userModel = 
-			   userService.hasMatchUser(user.getUserName(),
-					   user.getPassword());
+		User userModel = userService.hasMatchUser(user.getUserName(),user.getPassword());
 		
 		if (userModel==null) {
 			return JSON.toJSON("{success:false,info:'2222'}");
 		} else {
 			user = userService.findUserByCondition(userModel);
 			user.setLastIp(request.getLocalAddr());
-			user.setLastVisit(new Date());
+	//		user.setLastVisit(new Date());
 			userService.loginSuccess(user);
 			request.getSession().setAttribute("user", user);
 			return JSON.toJSON("{success:true,info:'1111'}");

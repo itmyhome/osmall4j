@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="UserInfo">
-    <typeAlias alias="LoginLog" type="com.os.entity.LoginLog"/>
-    <typeAlias alias="User" type="com.os.entity.User"/>
-    <resultMap class="com.os.entity.User" id="User">
+   <typeAlias alias="LoginLog" type="com.os.entity.LoginLog"/>
+   <typeAlias alias="User" type="com.os.entity.User"/>
+    <resultMap class="com.os.entity.User" id="result">
         <result property="userId" column="user_id" javaType="java.lang.Integer" nullValue=""/>
         <result property="userName" column="user_name" javaType="java.lang.String" nullValue=""/>
 		<result property="password" column="password" javaType="java.lang.String" nullValue=""/>
@@ -16,6 +16,7 @@
 		<result property="address" column="address" javaType="java.lang.String" nullValue=""/>
 		<result property="postCard" column="post_card" javaType="java.lang.String" nullValue=""/>
 		<result property="userImg" column="user_img" javaType="java.lang.String" nullValue=""/>
+		<result property="continuousLoginTimes" column="continuous_login_times" javaType="java.lang.Integer" nullValue=""/>
     </resultMap>
     
     <sql id="USER_INFOCondition">
@@ -38,7 +39,7 @@
           values(#userId#, #userName#, #password#,#credits#)
  	</insert>
  	<!-- 根据条件查询匹配的记录 -->
-	<select id="findUserByCondition" parameterClass="java.util.HashMap" resultMap="User">
+	<select id="findUserByCondition" parameterClass="java.util.HashMap" resultMap="result">
 	    SELECT USER_ID
 				,USER_NAME
 				,CREDITS
@@ -50,7 +51,8 @@
 				,REAL_NAME
 				,ADDRESS
 				,POST_CARD
-				,USER_IMG FROM t_user u 
+				,USER_IMG
+				,continuous_login_times FROM t_user u 
 	     <dynamic prepend="where">
 	         <isNotEmpty prepend="and" property="userId"> u.user_id=#userId#</isNotEmpty>
 	        <isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
@@ -61,7 +63,7 @@
 		</dynamic>
 	</select>
 	<!-- 根据用户名和密码查询匹配的记录 -->
-	<select id="getMatchCount" parameterClass="java.util.HashMap" resultMap="User">
+	<select id="getMatchCount" parameterClass="java.util.HashMap" resultMap="result">
 	    SELECT * FROM t_user WHERE user_name =#userName# and password=#password# 
 	</select>
 	<!-- 更新用户 -->
@@ -79,6 +81,7 @@
 			<isNotEmpty prepend="," property="address"> u.address=#address#</isNotEmpty>
 			<isNotEmpty prepend="," property="postCard"> u.post_card=#postCard#</isNotEmpty>
 			<isNotEmpty prepend="," property="userImg"> u.user_img=#userImg#</isNotEmpty>
+			<isNotEmpty prepend="," property="continuousLoginTimes"> u.Continuous_Login_Times=#continuousLoginTimes#</isNotEmpty>
 		</dynamic>
 		where 
  	 		u.user_id=#userId#
@@ -98,7 +101,7 @@
 		  select USERINFO_SEQUENCE.nextval  from dual
 	</select>
 	<!-- 查询用户列表 -->
-	<select id="getUserInfoList" resultMap="User" parameterClass="java.util.HashMap">
+	<select id="getUserInfoList" resultMap="result" >
 		select * from t_user u
 			<dynamic prepend="where">
 				<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
@@ -121,7 +124,7 @@
 			</dynamic>
 	</select>
 	<!-- 测试的sql -->
-	<select id="testUserInfoList" resultMap="User" parameterClass="java.util.HashMap">
+	<select id="testUserInfoList" resultMap="result" parameterClass="java.util.HashMap">
 	    
 	    select * from (select b.*,rownum rn from (
 			select USER_ID
@@ -135,7 +138,8 @@
 				,REAL_NAME
 				,ADDRESS
 				,POST_CARD
-				,USER_IMG from t_user u
+				,USER_IMG
+				,continuous_login_times from t_user u
 			<dynamic prepend="where">
 				<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
 				<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
