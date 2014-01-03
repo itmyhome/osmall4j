@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.os.dao.LoginLogDao;
@@ -14,12 +16,15 @@ import com.os.entity.LoginLog;
 import com.os.entity.User;
 import com.os.pageutil.PageInfoGrid;
 import com.os.pageutil.PageUtils;
+import com.os.web.UserControllerAnnotation;
 @Service
 public class UserService {
     @Resource
 	private UserDao userDao;
     @Resource
 	private LoginLogDao loginLogDao;
+    
+    private Log log = LogFactory.getLog(UserService.class);
 	public UserDao getUserDao() {
 		return userDao;
 	}
@@ -56,16 +61,25 @@ public class UserService {
 	}	
 	
 	public void create(User user){
-		String userId = userDao.getUserId();
+		Integer userId = userDao.getUserId();
 		user.setUserId(userId);
 		userDao.insert(user);
 		
 	}
 	
 	public ArrayList<User> getList(PageInfoGrid pageInfoGrid){
+		long exeuteBefore = System.currentTimeMillis();
+		log.info(System.currentTimeMillis());
 		int count = userDao.getCount(pageInfoGrid);
+		long exeuteAfter = System.currentTimeMillis();
+		log.info("[count-executeTime]"+ (exeuteAfter - exeuteBefore));
+		
 		PageUtils.setTotalRows(pageInfoGrid.getPage(), count);
+		long exeuteGetPageListBefore = System.currentTimeMillis();
+		log.info(System.currentTimeMillis());
 		ArrayList<User> userList = userDao.getPageList(pageInfoGrid);
+		long exeuteGetPageListAfter = System.currentTimeMillis();
+		log.info("[getPageList-executeTime]"+ (exeuteGetPageListAfter - exeuteGetPageListBefore));
 		return userList;
 	}
 	

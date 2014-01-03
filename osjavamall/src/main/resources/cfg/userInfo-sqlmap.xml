@@ -4,7 +4,7 @@
     <typeAlias alias="LoginLog" type="com.os.entity.LoginLog"/>
     <typeAlias alias="User" type="com.os.entity.User"/>
     <resultMap class="com.os.entity.User" id="User">
-        <result property="userId" column="user_id" javaType="java.lang.String" nullValue=""/>
+        <result property="userId" column="user_id" javaType="java.lang.Integer" nullValue=""/>
         <result property="userName" column="user_name" javaType="java.lang.String" nullValue=""/>
 		<result property="password" column="password" javaType="java.lang.String" nullValue=""/>
 		<result property="credits" column="credits" javaType="java.lang.Integer"/>
@@ -98,13 +98,21 @@
 		  select USERINFO_SEQUENCE.nextval  from dual
 	</select>
 	<!-- 查询用户列表 -->
-	<select id="getUserInfoList" resultMap="User" >
-		select * from t_user order by user_id desc
+	<select id="getUserInfoList" resultMap="User" parameterClass="java.util.HashMap">
+		select * from t_user u
+			<dynamic prepend="where">
+				<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
+				<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
+				<isNotEmpty prepend="and" property="password"> u.password=#password#</isNotEmpty>
+				<isNotEmpty prepend="and" property="lastVisit"> u.last_visit=#lastVisit#</isNotEmpty>
+				<isNotEmpty prepend="and" property="lastIp"> u.last_ip=#lastIp#</isNotEmpty>
+			</dynamic>
+			order by u.user_id desc
 	</select>
 	<!-- 查询用户总数 -->
 	<select id="getCountUserInfo" resultClass="java.lang.Integer">
 	    select count(*) from t_user u
-	    <dynamic prepend="where">
+	    	<dynamic prepend="where">
 				<isNotEmpty prepend="and" property="userName"> u.user_name=#userName#</isNotEmpty>
 				<isNotEmpty prepend="and" property="credits"> u.credits=#credits#</isNotEmpty>
 				<isNotEmpty prepend="and" property="password"> u.password=#password#</isNotEmpty>

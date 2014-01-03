@@ -9,4 +9,5 @@
   
   
  <sqlMap resource="cfg/userInfo-sqlmap.xml"/>
+ <sqlMap resource="cfg/itemCat-sqlmap.xml"/>
 </sqlMapConfig>

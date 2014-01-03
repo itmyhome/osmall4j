@@ -1,9 +1,11 @@
 package com.os.web;
 
-import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -84,11 +86,9 @@ public class UserControllerAnnotation{
 			hashMap.put("userName", user.getUserName());
 			pageInfoGrid.setSearch(hashMap);
 		}
-		long exeuteBefore = System.currentTimeMillis();
-		log.info(System.currentTimeMillis());
-		mv.addObject("userList", userService.getList(pageInfoGrid, hashMap));
-		long exeuteAfter = System.currentTimeMillis();
-		log.info("[executeTime]"+ (exeuteAfter - exeuteBefore));
+		
+		mv.addObject("userList", userService.getList(pageInfoGrid));
+		
 		mv.addObject("pageInfo", pageInfoGrid);
 		mv.setViewName("user3/list");
 		return mv;
@@ -126,27 +126,26 @@ public class UserControllerAnnotation{
 	
 	@RequestMapping(value = "/test") 
 	public void test() throws Exception{
-//		Connection conn = jdbcTemplate.getDataSource().getConnection();
-//	    String sql = "insert into t_user (user_id,user_name,credits,password) values(?,?,?,?)";
-//	    log.info("begin test----------------");
-//	    long startTime = System.currentTimeMillis();
-//		PreparedStatement ps = conn.prepareStatement(sql);
-//		for (int i = 0; i < 200000; i++) {
-//			ps.setString(1, UUID.randomUUID().toString());
-//			ps.setString(2, "linjinfeng"+i);
-//			ps.setInt(3, i);
-//			ps.setString(4, UUID.randomUUID().toString().substring(0, 6));
-//			ps.addBatch();
-//			if(i%20000==0){
-//				ps.executeBatch();
-//				
-//			}
-//		}
-//		long endTime = System.currentTimeMillis();
-//		log.info(endTime-startTime);
-//		
-//		ps.close();
-//		conn.close();
+		Connection conn = jdbcTemplate.getDataSource().getConnection();
+	    String sql = "insert into t_user (user_id,user_name,credits,password) values(?,?,?,?)";
+	    log.info("begin test----------------");
+	    long startTime = System.currentTimeMillis();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		for (int i = 0; i < 1000000; i++) {
+			ps.setInt(1, i);
+			ps.setString(2, UUID.randomUUID().toString().substring(0, 8));
+			ps.setInt(3, i);
+			ps.setString(4, UUID.randomUUID().toString().substring(0, 6));
+			ps.addBatch();
+			
+		}
+		ps.executeBatch();
+			
+		long endTime = System.currentTimeMillis();
+		log.info(endTime-startTime);
+		
+		ps.close();
+		conn.close();
 //		
 		
 //		String[] returnInfo = fastDFSFileOperator.uploadFile(new File("D:\\gina1987\\1.jpg"));

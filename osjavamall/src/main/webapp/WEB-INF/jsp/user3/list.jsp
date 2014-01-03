@@ -34,7 +34,7 @@
 		<tr>
 			<td>${user.userId }</td>
 			<td>${user.userName }</td>
-			<td><img src="http://192.168.1.199/${user.userImg }"></td>
+			<td><%-- <img src="http://192.168.1.199/${user.userImg }"> --%></td>
 			<td>${user.credits }</td>
 			<td>${user.lastVisit}</td>
 			<td><a
