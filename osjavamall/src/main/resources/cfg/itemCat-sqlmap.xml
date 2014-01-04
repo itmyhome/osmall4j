@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ItemCat">
+    <typeAlias alias="ItemCat" type="com.os.entity.itemcats.ItemCat"/>
+    <resultMap class="com.os.entity.itemcats.ItemCat" id="result">
+        <result property="cid" column="cid" javaType="java.lang.Integer" nullValue=""/>
+        <result property="name" column="name" javaType="java.lang.String" nullValue=""/>
+		<result property="parentCid" column="parent_cid" javaType="java.lang.Integer" nullValue=""/>
+		<result property="isParent" column="is_parent" javaType="java.lang.Boolean"/>
+		<result property="status" column="status" javaType="java.lang.Integer" nullValue=""/>
+		<result property="sortOrder" column="sort_order" javaType="java.lang.Integer" nullValue=""/>
+		<result property="modifiedTime" column="modified_time" javaType="java.util.Date" nullValue=""/>
+    </resultMap>
+    
+   <sql id="ITEM_CATCondition">
+		<dynamic prepend="where">
+			<isNotEmpty prepend="and" property="cid"> i.cid=#cid#</isNotEmpty>
+			<isNotEmpty prepend="and" property="name" > i.name=#name#</isNotEmpty>
+			<isNotEmpty prepend="and" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+			<isNotEmpty prepend="and" property="isParent" > i.is_parent=#isParent#</isNotEmpty>
+			<isNotEmpty prepend="and" property="status" > i.status=#status#</isNotEmpty>
+			<isNotEmpty prepend="and" property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
+			<isNotEmpty prepend="and" property="modifiedTime" > i.modified_time=#modifiedTime#</isNotEmpty>
+		</dynamic>
+	</sql>
+    
+	<insert id="addItemCat" parameterClass="ItemCat">
+ 		INSERT INTO ITEM_CAT(cid,name,parent_cid,is_parent,status,sort_order,modified_time) 
+          values(#cid#, #name#,#parentCid#,#isParent#,#status#,#sortOrder#,#modifiedTime#)
+ 	</insert>
+ 	
+ 	<!-- 根据条件查询匹配的记录 -->
+	<select id="findItemCatByCondition" parameterClass="java.util.HashMap" resultMap="result">
+	    SELECT cid
+				,name
+				,parent_cid
+				,is_parent
+				,status
+				,sort_order
+				,modified_time
+				 FROM ITEM_CAT i 
+	    <dynamic prepend="where">
+			<isNotEmpty prepend="and" property="cid"> i.cid=#cid#</isNotEmpty>
+			<isNotEmpty prepend="and" property="name" > i.name=#name#</isNotEmpty>
+			<isNotEmpty prepend="and" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+			<isNotEmpty prepend="and" property="isParent" > i.is_parent=#isParent#</isNotEmpty>
+			<isNotEmpty prepend="and" property="status" > i.status=#status#</isNotEmpty>
+			<isNotEmpty prepend="and" property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
+			<isNotEmpty prepend="and" property="modifiedTime" > i.modified_time=#modifiedTime#</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 更新 -->
+	<update id="updateItemCat" parameterClass="ItemCat">
+	    UPDATE ITEM_CAT i 
+	    <dynamic prepend="set">
+			<isNotEmpty prepend="," property="name" > i.name=#name#</isNotEmpty>
+			<isNotEmpty prepend="," property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+			<isNotEmpty prepend="," property="isParent" > i.is_parent=#isParent#</isNotEmpty>
+			<isNotEmpty prepend="," property="status" > i.status=#status#</isNotEmpty>
+			<isNotEmpty prepend="," property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
+			<isNotEmpty prepend="," property="modifiedTime" > i.modified_time=#modifiedTime#</isNotEmpty>
+		</dynamic>
+		where 
+ 	 		i.cid=#cid#
+	</update>
+	<!-- 删除 -->
+	<update id="deleteItemCat" parameterClass="ItemCat">
+	    DELETE from ITEM_CAT i 
+		where 
+ 	 		i.cid=#cid#
+	</update>
+	<!-- 查询记录总数 -->
+	<select id="getCountItemCat" resultClass="java.lang.Integer">
+	    select count(*) from ITEM_CAT i
+	    <dynamic prepend="where">
+				<isNotEmpty prepend="and" property="cid"> i.cid=#cid#</isNotEmpty>
+				<isNotEmpty prepend="and" property="name" > i.name=#name#</isNotEmpty>
+				<isNotEmpty prepend="and" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+				<isNotEmpty prepend="and" property="isParent" > i.is_parent=#isParent#</isNotEmpty>
+				<isNotEmpty prepend="and" property="status" > i.status=#status#</isNotEmpty>
+				<isNotEmpty prepend="and" property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
+				<isNotEmpty prepend="and" property="modifiedTime" > i.modified_time=#modifiedTime#</isNotEmpty>
+			</dynamic>
+	</select>
+	<!-- 根据条件查询记录的sql -->
+	<select id="getPageListItemCat" resultMap="result" parameterClass="java.util.HashMap">
+			SELECT cid
+				,name
+				,parent_cid
+				,is_parent
+				,status
+				,sort_order
+				,modified_time
+				 FROM ITEM_CAT i 
+			<dynamic prepend="where">
+				<isNotEmpty prepend="and" property="cid"> i.cid=#cid#</isNotEmpty>
+				<isNotEmpty prepend="and" property="name" > i.name=#name#</isNotEmpty>
+				<isNotEmpty prepend="and" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+				<isNotEmpty prepend="and" property="isParent" > i.is_parent=#isParent#</isNotEmpty>
+				<isNotEmpty prepend="and" property="status" > i.status=#status#</isNotEmpty>
+				<isNotEmpty prepend="and" property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
+				<isNotEmpty prepend="and" property="modifiedTime" > i.modified_time=#modifiedTime#</isNotEmpty>
+			</dynamic>
+			order by cid desc
+	</select>
+	<!-- 获取商品类别sequence序列值 -->
+	<select id="getItemCatId" resultClass="java.lang.Integer">
+		  select ITEMCAT_SEQ.nextval  from dual
+	</select>
+
+</sqlMap>
