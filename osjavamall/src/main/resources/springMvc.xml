@@ -20,6 +20,7 @@
 	<mvc:resources mapping="/ext3.0/**" location="/ext3.0/" />  
 	<mvc:resources mapping="/images/**" location="/images/" />  
 	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/jsp/**" location="/jsp/" />
 	<!-- HandlerMapping -->
 	<!-- <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/> -->
 	<!-- HandlerAdapter -->
@@ -105,4 +106,8 @@
 	class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 	<property name="basename" value="classpath:messages"/>
 	</bean>
+	
+	
+	<bean id="mappingJacksonHttpMessageConverter"  
+        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />  
 </beans>
