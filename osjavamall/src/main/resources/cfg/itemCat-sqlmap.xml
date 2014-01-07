@@ -26,7 +26,7 @@
     
 	<insert id="addItemCat" parameterClass="ItemCat">
  		INSERT INTO ITEM_CAT(cid,name,parent_cid,is_parent,status,sort_order,modified_time) 
-          values(#cid#, #name#,#parentCid#,#isParent#,#status#,#sortOrder#,#modifiedTime#)
+          values(#cid#, #name#,#parentCid#,#isParent#,1,#sortOrder#,sysdate)
  	</insert>
  	
  	<!-- 根据条件查询匹配的记录 -->
@@ -75,8 +75,8 @@
 	    select count(*) from ITEM_CAT i
 	    <dynamic prepend="where">
 				<isNotEmpty prepend="and" property="cid"> i.cid=#cid#</isNotEmpty>
-				<isNotEmpty prepend="and" property="name" > i.name=#name#</isNotEmpty>
-				<isNotEmpty prepend="and" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+				<isNotEmpty prepend="and" property="name" > i.name like concat(concat('%',#name#),'%')</isNotEmpty>
+				<isNotEmpty prepend="or" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
 				<isNotEmpty prepend="and" property="isParent" > i.is_parent=#isParent#</isNotEmpty>
 				<isNotEmpty prepend="and" property="status" > i.status=#status#</isNotEmpty>
 				<isNotEmpty prepend="and" property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
@@ -84,7 +84,7 @@
 			</dynamic>
 	</select>
 	<!-- 根据条件查询记录的sql -->
-	<select id="getPageListItemCat" resultMap="result" parameterClass="java.util.HashMap">
+	<select id="getPageListItemCat" resultMap="result" parameterClass="ItemCat">
 			SELECT cid
 				,name
 				,parent_cid
@@ -95,14 +95,14 @@
 				 FROM ITEM_CAT i 
 			<dynamic prepend="where">
 				<isNotEmpty prepend="and" property="cid"> i.cid=#cid#</isNotEmpty>
-				<isNotEmpty prepend="and" property="name" > i.name=#name#</isNotEmpty>
-				<isNotEmpty prepend="and" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
+				<isNotEmpty prepend="and" property="name" > i.name like concat(concat('%',#name#),'%')</isNotEmpty>
+				<isNotEmpty prepend="or" property="parentCid" > i.parent_cid=#parentCid#</isNotEmpty>
 				<isNotEmpty prepend="and" property="isParent" > i.is_parent=#isParent#</isNotEmpty>
 				<isNotEmpty prepend="and" property="status" > i.status=#status#</isNotEmpty>
 				<isNotEmpty prepend="and" property="sortOrder" > i.sort_order=#sortOrder#</isNotEmpty>
 				<isNotEmpty prepend="and" property="modifiedTime" > i.modified_time=#modifiedTime#</isNotEmpty>
 			</dynamic>
-			order by cid desc
+			order by i.cid desc
 	</select>
 	<!-- 获取商品类别sequence序列值 -->
 	<select id="getItemCatId" resultClass="java.lang.Integer">
